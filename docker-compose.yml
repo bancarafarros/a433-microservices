@@ -1,23 +1,30 @@
-# Menggunakan version 2.24.5
+# Menggunakan docker compose versi 2.24.5
 version: "2.24.5"
 
-
 services:
-# Mengatur service untuk container item-db
+  # Mengatur service untuk container item-db
   item-db:
+    # Menggunakan mongo versi 3
     image: mongo:3
+    # Membuat container selalu restart ketika terhenti
     restart: always
+    # Port mapping ke port 27017		
     ports:
       - 27017:27017
-    volumes:
+    # Menentukan volume dengan direktori /data/db
+    volumes:	
       - app-db:/data/db
-
-# Mengatur service untuk container item-app
+  
+  # Mengatur service untuk container item-app
   item-app:
-    image: kixanax13/item-app:v1
+    # Menggunakan image dari Github Packages
+    image: ghcr.io/bancarafarros/item-app:v1
+    # Membuat item-app berjalan setelah item-db dijalankan
     depends_on:
       - item-db
+    # Membuat container selalu restart ketika terhenti 
     restart: always
+    # Port mapping ke port 80
     ports:
       - 80:8080
 
