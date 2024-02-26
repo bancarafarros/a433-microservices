@@ -1,0 +1,26 @@
+# Menggunakan version 2.24.5
+version: "2.24.5"
+
+
+services:
+# Mengatur service untuk container item-db
+  item-db:
+    image: mongo:3
+    restart: always
+    ports:
+      - 27017:27017
+    volumes:
+      - app-db:/data/db
+
+# Mengatur service untuk container item-app
+  item-app:
+    image: kixanax13/item-app:v1
+    depends_on:
+      - item-db
+    restart: always
+    ports:
+      - 80:8080
+
+# Mengatur bridge volume untuk item-db
+volumes:
+  app-db:
