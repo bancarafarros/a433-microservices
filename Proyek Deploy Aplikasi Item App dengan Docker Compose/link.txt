@@ -1,2 +1,0 @@
-Docker Hub: https://hub.docker.com/repository/docker/kixanax13/item-app/general
-GHCR: https://github.com/users/bancarafarros/packages/container/package/item-app
