@@ -1,0 +1,28 @@
+apiVersion: v1 # Versi API Kubernetes dan jenis objek yang akan digunakan (PersistentVolume)
+kind: PersistentVolume # Jenis objek Kubernetes yang akan dibuat (PersistentVolume)
+metadata:
+  name: mongo-pv # Nama Persistent Volume
+  labels:
+    type: local # Label untuk menandai jenis PV
+spec:
+  storageClassName: manual # Kelas penyimpanan manual
+  capacity:
+    storage: 1Gi # Kapasitas penyimpanan 1 gigabyte
+  accessModes:
+    - ReadWriteOnce # Mode akses ReadWriteOnce (hanya dapat dibaca dan ditulis oleh satu node)
+  hostPath:
+    path: "/mnt/data" # Path di host file system tempat PV disimpan
+
+---
+
+apiVersion: v1 # Versi API Kubernetes dan jenis objek yang akan digunakan (PersistentVolumeCLaim)
+kind: PersistentVolumeClaim # Jenis objek Kubernetes yang akan dibuat (PersistentVolumeClaim)
+metadata:
+  name: mongo-pvc # Nama Persistent Volume Claim
+spec:
+  storageClassName: manual # Kelas penyimpanan manual, sesuai dengan PV
+  accessModes:
+    - ReadWriteOnce # Mode akses ReadWriteOnce yang sesuai dengan PV
+  resources:
+    requests:
+      storage: 1Gi # Permintaan penyimpanan 1 gigabyte untuk PVC

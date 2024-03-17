@@ -1,0 +1,23 @@
+apiVersion: apps/v1 # Versi API Kubernetes dan jenis objek yang akan digunakan
+kind: Deployment # Jenis objek Kubernetes yang akan dideploy
+metadata:
+  name: karsajobs-ui-frontend # Nama Deployment
+spec:
+  replicas: 1  # Menentukan jumlah replika yang akan dijalankan
+  selector:
+    matchLabels:
+      app: frontend  # Selektor untuk menentukan pod
+  template:
+    metadata:
+      labels:
+        app: frontend  # Menentukan label untuk pod
+    spec:
+      containers:
+      - name: karsajobs-ui # Nama container
+        image: karsajobs-ui:latest  # Menentukan image Docker yang akan digunakan
+        imagePullPolicy: Always  # Selalu pull image terbaru
+        ports:
+        - containerPort: 8000  # Menentukan port yang akan di-expose di dalam container
+        env:
+        - name: VUE_APP_BACKEND
+          value: "http://192.168.49.2:31677" # Menentukan env variabel yang akan digunakan oleh aplikasi

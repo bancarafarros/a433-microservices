@@ -1,0 +1,53 @@
+apiVersion: apps/v1 # Versi API Kubernetes yang digunakan (apps/v1 untuk StatefulSet)
+kind: StatefulSet # Jenis objek Kubernetes yang didefinisikan (StatefulSet untuk aplikasi stateful)
+metadata:
+  name: mongodb # Nama StatefulSet
+  labels:
+    app: database # Label untuk StatefulSet
+spec:
+  selector:
+    matchLabels:
+      app: database # Label selektor untuk memilih pod yang dimiliki oleh StatefulSet
+  serviceName: mongo-service # Nama layanan yang terkait dengan StatefulSet
+  replicas: 1 # Jumlah replika (pod) yang diinginkan
+  template:
+    metadata:
+      labels:
+        app: database # Label untuk pod yang dihasilkan oleh StatefulSet
+        selector: mongodb # Label selector untuk pod yang dihasilkan oleh StatefulSet
+    spec:
+      containers:
+      - name: mongodb # Nama container dalam pod
+        image: mongo:4.4.3 # Gambar Docker yang digunakan untuk container
+        ports:
+        - containerPort: 27017 # Port yang di-ekspos oleh container
+        env:
+        - name: MONGO_INITDB_ROOT_USERNAME_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_USERNAME
+        - name: MONGO_INITDB_ROOT_PASSWORD_FILE
+          value: /etc/mongo-credentials/MONGO_ROOT_PASSWORD 
+        volumeMounts:
+        - name: mongo-data # Nama volume yang di-mount ke container
+          mountPath: /data/db # Path di dalam container untuk mount volume
+        - name: mongo-config # Nama volume lain yang di-mount ke container
+          mountPath: /config # Path di dalam container untuk mount volume
+        - name: mongo-credentials # Nama volume lain yang di-mount ke container
+          mountPath: /etc/mongo-credentials
+      volumes:
+      - name: mongo-data # Nama volume persistent yang digunakan oleh pod
+        persistentVolumeClaim:
+          claimName: mongo-pvc # Nama klaim volume persisten
+      - name: mongo-config # Nama volume lain yang dihasilkan dari ConfigMap
+        configMap:
+          name: mongo-config # Nama ConfigMap yang digunakan
+          items:
+          - key: mongo.conf # Nama kunci dalam ConfigMap
+            path: mongo.conf # Path di dalam pod untuk menyimpan file konfigurasi
+      - name: mongo-credentials # Nama volume lain yang dihasilkan dari Secret
+        secret:
+          secretName: mongo-credentials # Nama Secret yang digunakan
+          items:
+          - key: MONGO_ROOT_USERNAME
+            path: MONGO_ROOT_USERNAME # Path di dalam pod untuk menyimpan nama pengguna root MongoDB
+          - key: MONGO_ROOT_PASSWOR
+            path: MONGO_ROOT_PASSWORD # Path di dalam pod untuk menyimpan kata sandi pengguna root MongoDB

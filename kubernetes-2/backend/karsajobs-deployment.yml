@@ -1,0 +1,36 @@
+apiVersion: apps/v1 # Versi API Kubernetes dan jenis objek yang akan digunakan
+kind: Deployment # Jenis objek Kubernetes yang akan di-deploy
+metadata:
+  name: karsajobs-backend  # Nama deployment
+spec:
+  replicas: 1  # Jumlah replika pod yang akan dijalankan
+  selector:
+    matchLabels:
+      app: backend  # Seleksi pod berdasarkan "labels app backend"
+  template:
+    metadata:
+      labels:
+        app: backend  # Label untuk pod
+    spec: 
+      containers:
+      - name: karsajobs  # Nama container
+        image: karsajobs:latest  # Nama dan versi image Docker yang digunakan
+        imagePullPolicy: Always  # Kapan image harus diperbarui
+        ports:
+        - containerPort: 8080  # Port yang akan digunakan oleh container
+        env:
+        - name: APP_PORT
+          value: '8080'  # env variabel untuk konfigurasi aplikasi
+        - name: MONGO_HOST
+          value: mongo-service  # Host MongoDB yang akan digunakan
+        - name: MONGO_USER
+          valueFrom:
+            secretKeyRef:
+              name: mongo-credentials  # Kredensial MongoDB
+              key: MONGO_ROOT_USERNAME  # Username untuk mendapatkan kredensial MongoDB
+        - name: MONGO_PASS
+          valueFrom:
+            secretKeyRef:
+              name: mongo-credentials  # Kredensial MongoDB
+              key: MONGO_ROOT_PASSWORD  # Password untuk mendapatkan nilai kredensial MongoDB
+
