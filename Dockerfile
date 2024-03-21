@@ -10,5 +10,5 @@ RUN npm install
 COPY . .
 # Mendefinisikan port yang akan diexpose oleh container
 EXPOSE 3001
-# Menjalankan aplikasi dengan perintah npm start
-CMD [ "npm", "start"]
+# Menjalankan aplikasi
+CMD ["node", "index.js"]
