@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service # Nama deployment
+spec:
+  replicas: 1 # Jumlah replika pod yang ingin dibuat
+  selector:
+    matchLabels:
+      app: order-service # Label pod
+  template:
+    metadata:
+      labels:
+        app: order-service # Label pod
+    spec:
+      containers:
+      - name: order-service # Nama container
+        image: ghcr.io/bancarafarros/order-service:v1 # Nama dan versi image container
+        imagePullPolicy: Always # Kebijakan untuk selalu pull image terbaru jika terdapat perubahan pada Container Image di Container Registry
+        ports:
+        - containerPort: 3000 # Port yang digunakan oleh container
+        env:
+        - name: AMQP_URL # Define env variabel
+          #value: "amqp:rabbitmq-service-internal"
+          value: "amqp://guest:guest@10.98.258.55:5672" # Nilai URL AMQP yang digunakan

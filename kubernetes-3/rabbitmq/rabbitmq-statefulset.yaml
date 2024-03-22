@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: rabbitmq-1 # Nama service yang akan dibuat
+  labels:
+    app: rabbitmq # Label yang digunakan
+spec:
+  selector:
+    matchLabels:
+      app: rabbitmq # Label pod
+  serviceName: rabbitmq-service # Service yang terhubung
+  replicas: 1 # Jumlah replika pod yang ingin 
+  template:
+    metadata:
+      labels:
+        app: rabbitmq # Label pod
+        selector: rabbitmq-1 # Selector merujuk metadata nama kind
+    spec:
+      containers:
+      - name: rabbitmq-container # Nama container
+        image: rabbitmq:3.11-management-alpine # Image yang digunakan
+        ports:
+        - containerPort: 15672 # Port yang digunakan container
+        - containerPort: 5672 # Port yang digunakan container
+        volumeMounts: # 2 volume yang di-mount yaitu data dan log
+        - name: rabbitmq-data
+          mountPath: /rabbitmq/data
+        - name: rabbitmq-log
+          mountPath: /rabbitmq/log
+      volumes: # Define detail volume yang di-mount
+      - name: rabbitmq-data # Nama volume mount
+        configMap: # Diambil dari configMap
+          name: rabbitmq-config # Nama configMap
+          items:
+          - key: data.conf # Key configMap
+            path: data.conf # Path dalam configMap
+      - name: rabbitmq-log # Nama volume mount
+        persistentVolumeClaim: # Diambil dari PVC dan PV
+          claimName: rabbitmq-pvc # Nama PVC

@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap # Nama ConfigMap yang akan dibuat
+metadata:
+  name: rabbitmq-config # metadata nama adalah rabbitmq-config
+data:
+  data.conf: | # Define data dalam configmap untuk mount /rabbitmq/data
+    storage:
+      data: /rabbitmq/data
+# Konfigurasi untuk path penyimpanan

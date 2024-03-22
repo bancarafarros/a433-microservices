@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: rabbitmq-pv # Nama PV
+  labels:
+    type: local # Label denga type local
+spec:
+  storageClassName: manual # Define storageClassName
+  capacity:
+    storage: 1Gi # Kapasitas storage yang digunakan sebesar 1 GB
+  accessModes:
+    - ReadWriteOnce # Akses mode RWO (hanya dapat dibaca dan ditulis oleh satu node)
+  hostPath:
+    path: "/mnt/data" # Path di host file system tempat PV disimpan
+
+---
+
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: rabbitmq-pvc # Nama PVC
+spec:
+  storageClassName: manual # Define storageClassName
+  accessModes:
+    - ReadWriteOnce # Akses mode RWO (hanya dapat dibaca dan ditulis oleh satu node)
+  resources:
+    requests:
+      storage: 1Gi # Kapasitas storage yang digunakan sebesar 1 GB

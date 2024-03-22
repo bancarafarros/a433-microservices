@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: rabbitmq-service # Nama service yang akan dibuat
+  labels:
+    app: rabbitmq # Label yang digunakan
+spec:
+  ports:
+  - port: 15672 # Port yang digunakan oleh service
+    protocol: TCP # Menggunakan TCP protocol
+  type: NodePort # Menggunakan type NodePort
+  selector:
+    app: rabbitmq # Selector app yaitu rabbitmq
